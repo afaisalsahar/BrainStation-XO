@@ -1,3 +1,66 @@
-body {
-    background-color: red;
+@use './partials/_variables' as *;
+@use './partials/_reset' as *;
+@use './partials/_globals' as *;
+@use './partials/_mixins' as *;
+
+
+.container {
+    @extend .flex-container;
+
+    flex-flow: column nowrap;
+    min-height: 100%;
+    background: radial-gradient(circle farthest-corner, rgba(255, 255, 255, 1), rgba(255, 255, 255, .2));
+}
+
+.xo {
+    flex: 0 0 15rem;
+    width: 19rem;
+    border: 1px solid $primary-color-quartary;
+    background-color: $primary-color-quartary
+}
+
+.mode {
+    @extend .flex-container;
+
+    flex-flow: column nowrap;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    min-height: 16rem;
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: $size-increment-x2-1;
+        margin-bottom: $size-increment-x2;
+    }
+
+    &__main {
+        @extend .flex-container;
+        
+        width: 100%;
+    }
+
+    &__type {
+        cursor: pointer;
+        flex: 0 0 40%;
+        padding: .8rem 0;
+        border-radius: $size-increment-x1;
+        text-align: center;
+        background: $primary-color-tertiary;
+        transition: background .3s;
+        color: $primary-color-quartary;
+        
+        &:hover {
+            background: $primary-color-secondary;
+        }
+
+        &:first-child {
+            margin-right: $size-increment-x2;
+        }
+    }
+
+    &__icon {
+        font-size: $size-increment-x5;
+        margin-bottom: $size-increment-x1;
+    }
 }
