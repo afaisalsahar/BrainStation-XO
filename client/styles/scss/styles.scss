@@ -113,3 +113,60 @@
     
     }
 }
+
+
+.level {
+    @extend .flex-container;
+    
+    display: none;
+    flex-flow: column nowrap;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    min-height: 16rem;
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: $size-increment-x2-1;
+        margin-bottom: $size-increment-x2;
+    }
+
+    &__main {
+        @extend .flex-container;
+        
+        width: 100%;
+    }
+
+    &__size {
+        text-align: center;
+        flex: 0 0 30%;
+        cursor: pointer;
+
+    }
+
+    &__icon {
+        display: none;
+
+        font-size: $size-increment-x5;
+        transition: all .5s;
+
+        &--circle {
+            &:hover {
+                color: $alternate-color-main;
+            }
+        }
+    
+        &--times {
+            font-size: 3.5rem;
+            &:hover {
+                color: $alternate-color-secondary;
+            }
+        }
+    }
+
+    &__one {
+        .level__icon--times {
+            font-size: $size-increment-x5;
+        }
+    }
+}
