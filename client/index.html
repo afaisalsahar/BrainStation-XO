@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./styles/css/styles.css" />
     <title>XO</title>
 </head>
+
 <body>
     <div class="container">
         <div class="xo">
-            
+
             <div class="mode">
                 <div class="mode__top">
                     <h1 class="mode__title">Game Mode</h1>
@@ -36,7 +43,8 @@
                 </div>
                 <div class="side__main">
                     <span class="side__icon side__icon--circle" data-side="circle"><i class="fa fa-circle-o"></i></span>
-                    <span class="side__icon side__icon--times" data-side="times"><i class="fa-solid fa-xmark"></i></span>
+                    <span class="side__icon side__icon--times" data-side="times"><i
+                            class="fa-solid fa-xmark"></i></span>
                 </div>
             </div>
 
@@ -59,11 +67,98 @@
                     </span>
                 </div>
             </div>
-    
+
+            <div class="game">
+                <div class="game__result">
+                    <div class="game__draw">
+                        <span class="game__icon">
+                            <i class="fa fa-exchange"></i>
+                        </span>
+                        <h1 class="status">It's a tie</h1>
+                    </div>
+                    <div class="game__win">
+                        <span class="game__icon">
+                            <i class="fa fa-trophy"></i>
+                        </span>
+                        <h1 class="status">Ai Wins</h1>
+                    </div>
+                </div>
+                <div class="game__top">
+                    <ul class="game__stats">
+                        <li class="game__circle">
+                            <span class="game__icon"><i class="fa fa-circle-o"></i></span>
+                            <span class="game__counter">0 win</span>
+                        </li>
+                        <li class="game__times">
+                            <span class="game__icon"><i class="fa-solid fa-xmark"></i></span>
+                            <span class="game__counter">0 win</span>
+                        </li>
+                        <li class="game__draw">
+                            <span class="game__icon"><i class="fa fa-balance-scale"></i></span>
+                            <span class="game__counter">0 draw</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="game__main">
+                    <table class="game__board">
+                        <tr class="game__row">
+                            <td class="game__cell" data-index="0" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="1" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="2" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                        </tr>
+                        <tr class="game__row">
+                            <td class="game__cell" data-index="3" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="4" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="5" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                        </tr>
+                        <tr class="game__row">
+                            <td class="game__cell" data-index="6" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="7" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="8" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="game__bottom">
+                    <div class="game__indicator">
+                        <span class="game__switch">
+                            <span class="game__icon game__icon--times"><i class="fa-solid fa-xmark"></i></span>
+                            <span class="game__icon game__icon--circle"><i class="fa fa-circle-o"></i></span>
+                        </span>
+                    </div>
+                    <div class="game__controls">
+                        <span id="game-refresh" class="game__button"><i class="fa fa-refresh"></i></span>
+                        <span id="game-mode" class="game__mode">Game Mode</span>
+                        <span id="game-reset" class="game__button"><i class="fa fa-cog"></i></span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

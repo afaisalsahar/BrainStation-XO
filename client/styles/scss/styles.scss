@@ -16,7 +16,7 @@
     flex: 0 0 15rem;
     width: 19rem;
     border: 1px solid $primary-color-quartary;
-    background-color: $primary-color-quartary
+    background-color: #fefefe;
 }
 
 .mode {
@@ -168,5 +168,182 @@
         .level__icon--times {
             font-size: $size-increment-x5;
         }
+    }
+}
+
+.game {
+    @extend .flex-container;
+
+    display: none;
+    
+    flex-flow: column nowrap;
+    align-items: center;
+
+    position: relative;
+
+    &__top, &__bottom {
+        width: 100%;
+    }
+
+    &__main {
+        padding: $size-increment-x2 0;
+    }
+
+    &__stats {
+        @extend .flex-container;
+
+        justify-content: space-around;
+
+        margin: 0;
+        padding: $size-increment-x2 0;
+        list-style-type: none;
+        text-align: center;
+        font-weight: $font-style-bold;
+
+        li {
+            font-size: .9rem;
+            flex: 0 0 4.5rem;
+        }
+    }
+
+    &__circle {
+        color: $alternate-color-main;
+    }
+
+    &__times {
+        color: $alternate-color-secondary;
+    }
+
+    &__icon {
+        font-size: 1.3rem;
+        display: block;    
+    }
+
+    &__board {
+        border-collapse: collapse;
+    }
+
+    &__cell {
+        width: $size-increment-x6;
+        height: $size-increment-x6;
+        line-height: $size-increment-x6;
+        font-size: $size-increment-x4-1;
+        text-align: center;
+        border-right: 1px solid $alternate-color-quartary;
+        border-bottom: 1px solid $alternate-color-quartary;
+
+        cursor: cell;
+
+        &--hover {
+            color: #E8E8E8;
+        }
+        &--times {
+            color: $alternate-color-secondary;
+        }
+        &--circle{
+            color: $alternate-color-main;
+        }
+        &--won {
+            color: $alternate-color-tertiary;
+        }
+        &--draw {
+            color: $alternate-color-quartary;
+        }
+
+        &:nth-child(3) {
+            border-right: none;
+        }
+    }
+
+    &__row {
+        &:nth-child(3) {
+            .game__cell {
+                border-bottom: none;
+            }
+        }
+    }
+
+    &__indicator {
+        max-width: 20%;
+        margin: auto;
+        padding: $size-increment-x2 0;    
+
+        .game__icon {
+            padding: 2px 0;
+            width: 50%;
+            text-align: center;
+
+            &--active-circle {
+                border-radius: 100%;
+                color: $primary-color-quartary;
+                box-shadow: 0 0 0 2px $primary-color-quartary;
+                background: $alternate-color-main;
+            }
+
+            &--active-times {
+                border-radius: 100%;
+                color: $primary-color-quartary;
+                box-shadow: 0 0 0 2px $primary-color-quartary;
+                background: $alternate-color-secondary;
+            }
+        }
+    }
+
+    &__switch {
+        @extend .flex-container;
+
+        border: 1px solid $alternate-color-quartary;
+        border-radius: $size-increment-x5;
+    }
+
+    &__controls {
+        @extend .flex-container;
+        
+        justify-content: space-around;
+        padding: $size-increment-x2 0;
+    }
+
+    &__button {        
+        @extend .flex-container;
+
+        flex: 0 0 $size-increment-x3;
+        height: $size-increment-x3;
+        cursor: pointer;
+        color: $primary-color-quartary;
+        background: $primary-color-tertiary;
+        border-radius: 100%;
+        box-shadow: 0 0 0 $size-increment-x1 $primary-color-quartary, 0 0 0 $size-increment-x1 $primary-color-tertiary;
+        transition: box-shadow,background .3s;
+
+        &:hover {
+            background: $primary-color-secondary;
+            box-shadow: 0 0 0 $size-increment-x1 $primary-color-quartary, 0 0 0 $size-increment-x1 $primary-color-secondary;
+        }
+
+        &:active, &:focus {
+            background: $alternate-color-secondary;
+            box-shadow: 0 0 0 $size-increment-x1 $primary-color-quartary, 0 0 0 $size-increment-x1 $alternate-color-secondary;
+        }
+    }
+
+    &__mode {
+        font-weight: $font-style-medium;
+        text-transform: uppercase;
+        border: 1px solid $primary-color-tertiary;
+        border-radius: $size-increment-x5;
+        padding: .3em .5em;
+    }
+
+    &__result {
+        display: none;
+        flex-flow: column nowrap;
+        justify-content: center;
+
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: #F9F9F9;
+        text-align: center;
+        z-index: 1;
     }
 }
