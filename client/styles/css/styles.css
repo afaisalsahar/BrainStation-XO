@@ -58,7 +58,7 @@ span {
   display: block;
 }
 
-.flex-container, .container, .mode, .mode__main, .side, .side__main, .level, .level__main, .game, .game__stats, .game__switch, .game__controls, .game__button {
+.flex-container, .container, .mode, .mode__main, .side, .side__main, .level, .level__main, .join, .join__form, .game, .game__stats, .game__switch, .game__controls, .game__button {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -81,8 +81,7 @@ span {
 
 .mode {
   flex-flow: column nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 16rem;
+  min-height: 25rem;
   height: 100%;
 }
 .mode__title {
@@ -118,8 +117,7 @@ span {
 .side {
   display: none;
   flex-flow: column nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 16rem;
+  min-height: 25rem;
   height: 100%;
 }
 .side__title {
@@ -188,6 +186,54 @@ span {
   font-size: 4rem;
 }
 
+.join {
+  display: none;
+  flex-flow: column wrap;
+  min-height: 25rem;
+  height: 100%;
+}
+.join__title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.join__main {
+  width: 100%;
+}
+.join__form {
+  width: 100%;
+  flex-wrap: wrap;
+}
+.join__name, .join__room, .join__action {
+  width: 80%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 4rem;
+}
+.join__name, .join__room {
+  padding-left: 1rem;
+  border: 2px solid #909090;
+  transition: border 0.3s;
+}
+.join__name:hover, .join__name:active, .join__name:focus, .join__room:hover, .join__room:active, .join__room:focus {
+  outline: none;
+  border-color: #565656;
+}
+.join__action {
+  width: 60%;
+  color: #EFEFEF;
+  text-transform: uppercase;
+  font-weight: 600;
+  background-color: #909090;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.join__action:hover, .join__action:active {
+  background-color: #565656;
+}
+
 .game {
   display: none;
   flex-flow: column nowrap;
@@ -239,10 +285,10 @@ span {
   color: #E8E8E8;
 }
 .game__cell--times {
-  color: #3989d4;
+  color: #4dbcd4;
 }
 .game__cell--circle {
-  color: #4dbcd4;
+  color: #3989d4;
 }
 .game__cell--won {
   color: #5C7184;

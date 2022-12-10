@@ -48,6 +48,29 @@
                 </div>
             </div>
 
+            <div class="join">
+                <div class="join__top">
+                    <h1 class="join__title">Create/Join Room</h1>
+                </div>
+                <div class="join__main">
+                    <form class="join__form" id="join-game">
+                        <input
+                            type="text"
+                            class="join__name"
+                            id="join-name"
+                            placeholder="Pick Username"
+                        />
+                        <input
+                            type="text"
+                            class="join__room"
+                            id="join-room"
+                            placeholder="Pick Room"
+                        />
+                        <button type="submit" class="join__action" id="join-game">Submit</button>
+                    </form>
+                </div>
+			</div>
+
             <div class="level">
                 <div class="level__top">
                     <h1 class="level__title">Pick Level</h1>
@@ -102,35 +125,35 @@
                 <div class="game__main">
                     <table class="game__board">
                         <tr class="game__row">
-                            <td class="game__cell" data-index="0" data-checked="false">
+                            <td class="game__cell" data-index="0" id="0" data-checked="false">
                                 <i class="fa"></i>
                             </td>
-                            <td class="game__cell" data-index="1" data-checked="false">
+                            <td class="game__cell" data-index="1" id="1" data-checked="false">
                                 <i class="fa"></i>
                             </td>
-                            <td class="game__cell" data-index="2" data-checked="false">
-                                <i class="fa"></i>
-                            </td>
-                        </tr>
-                        <tr class="game__row">
-                            <td class="game__cell" data-index="3" data-checked="false">
-                                <i class="fa"></i>
-                            </td>
-                            <td class="game__cell" data-index="4" data-checked="false">
-                                <i class="fa"></i>
-                            </td>
-                            <td class="game__cell" data-index="5" data-checked="false">
+                            <td class="game__cell" data-index="2" id="2" data-checked="false">
                                 <i class="fa"></i>
                             </td>
                         </tr>
                         <tr class="game__row">
-                            <td class="game__cell" data-index="6" data-checked="false">
+                            <td class="game__cell" data-index="3" id="3" data-checked="false">
                                 <i class="fa"></i>
                             </td>
-                            <td class="game__cell" data-index="7" data-checked="false">
+                            <td class="game__cell" data-index="4" id="4" data-checked="false">
                                 <i class="fa"></i>
                             </td>
-                            <td class="game__cell" data-index="8" data-checked="false">
+                            <td class="game__cell" data-index="5" id="5" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                        </tr>
+                        <tr class="game__row">
+                            <td class="game__cell" data-index="6" id="6" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="7" id="7" data-checked="false">
+                                <i class="fa"></i>
+                            </td>
+                            <td class="game__cell" data-index="8" id="8" data-checked="false">
                                 <i class="fa"></i>
                             </td>
                         </tr>
@@ -158,6 +181,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
         integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
 </body>
 

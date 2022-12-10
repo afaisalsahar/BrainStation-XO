@@ -23,8 +23,7 @@
     @extend .flex-container;
 
     flex-flow: column nowrap;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
-    min-height: 16rem;
+    min-height: 25rem;
     height: 100%;
 
     &__title {
@@ -70,8 +69,7 @@
     
     display: none;
     flex-flow: column nowrap;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
-    min-height: 16rem;
+    min-height: 25rem;
     height: 100%;
 
     &__title {
@@ -113,7 +111,6 @@
     
     }
 }
-
 
 .level {
     @extend .flex-container;
@@ -167,6 +164,67 @@
     &__one {
         .level__icon--times {
             font-size: $size-increment-x5;
+        }
+    }
+}
+
+.join {
+    @extend .flex-container;
+    
+    display: none;
+    flex-flow: column wrap;
+    min-height: 25rem;
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: $size-increment-x2-1;
+        margin-bottom: $size-increment-x2;
+    }
+
+    &__main {
+        width: 100%;
+    }
+
+    &__form {
+        @extend .flex-container;
+
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    &__name, &__room, &__action {
+        width: 80%;
+        padding: $size-increment-x1-2;
+        margin-bottom: $size-increment-x2;
+        border-radius: $size-increment-x5;
+    }
+
+    &__name, &__room {
+        padding-left: $size-increment-x2;
+        border: 2px solid $primary-color-tertiary;
+
+        transition: border .3s;
+        &:hover, &:active, &:focus {
+            outline: none;
+            border-color: $primary-color-secondary;
+        }
+    }
+
+    &__action {
+        width: 60%;
+        color: $primary-color-quartary;
+        text-transform: uppercase;
+        font-weight: $font-style-medium;
+        background-color: $primary-color-tertiary;
+        border: none;
+        cursor: pointer;
+
+        transition: background .3s;
+
+        &:hover, &:active {
+            background-color: $primary-color-secondary;
         }
     }
 }
@@ -238,10 +296,10 @@
             color: #E8E8E8;
         }
         &--times {
-            color: $alternate-color-secondary;
+            color: $alternate-color-main;
         }
         &--circle{
-            color: $alternate-color-main;
+            color: $alternate-color-secondary;
         }
         &--won {
             color: $alternate-color-tertiary;
