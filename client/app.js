@@ -81,6 +81,34 @@ function handlePlayerMove(cell, value) {
     return true;
 }
 
+function displayGmeResults(status, side) {
+    if(status === 2) {
+        $(".game-result")
+            .addClass("game-result--draw");
+        $(".game-result")
+            .fadeIn(300, function() {
+            $(".game-result__draw")
+                .fadeIn(300, false);
+        }).css("display", "flex");
+    };
+
+    if(status === 1) {
+        $(".game-result")
+            .addClass(side == "circle" ? "game-result--circle" : "game-result--times");
+        
+            if (gameMode === "single") {
+            $(".game-result__win .game-result__status")
+                .html(activePlayer === player ? "You Win" : "Ai Wins");
+        }
+
+        $(".game-result")
+            .fadeIn(300, function() {
+                $(".game-result__win")
+                    .fadeIn(300, false);
+        }).css("display", "flex");
+    }
+}
+
 // hanlde game results
 function handleGameResult(pattern) {
 
@@ -96,6 +124,7 @@ function handleGameResult(pattern) {
     if (gameMode === "single") {
         const allCells = $(".game__cell");
         const winCombo = winCombinations(gameBoard, activePlayer);
+       
         const result = pattern || (winCombo ? 1 : (!winCombo && !getEmptyCells(gameBoard).length) ? 2 : 0);
         
         if (result === 1) {
@@ -106,15 +135,24 @@ function handleGameResult(pattern) {
                     .removeClass()
                     .addClass("game__cell game__cell--won animate__animated animate__bounceOut");
             }
+
+            setTimeout(function() {
+                displayGmeResults(result, activePlayer)
+            }, 800);
         }
     
-        if (result == 2) {            
+        if (result === 2) {
             boardRL.push("draw");
             gameStats.d++;
             for (let i = 0; i < gameBoard.length; i++) {
                 $(allCells[i])
                     .removeClass()
-                    .addClass("game__cell game__cell--draw animate__animated animate__fadeOut");}
+                    .addClass("game__cell game__cell--draw animate__animated animate__fadeOut");
+            }
+
+            setTimeout(function() {
+                displayGmeResults(result, activePlayer)
+            }, 800);
         }
     }
 }
@@ -153,8 +191,8 @@ $(".game__cell").on("click", function(e) {
     if (gameMode === "single") {
         if ((disablePlayerInteraction) || !handlePlayerMove(this, activePlayer)) return;
 
-        // if(checkResults()) return setTimeout(firstMove, 2005);
-        // switchP(true);
+        if(checkResults()) return;
+
         handleSwitchPlayer();
 
         if(activePlayer === ai) {
@@ -255,8 +293,8 @@ function generateRandomNumber(start, end) {
 }
 
 function getEmptyCells(board){
-    return board.filter(function (cell){
-        return cell != "circle" && cell != "times"
+    return board.filter(function (marker){
+        return marker !== "circle" && marker !== "times"
     });
 }
 
@@ -274,6 +312,7 @@ function winCombinations(board, player) {
 }
 
 function checkResults() {
+
     if (winCombinations(gameBoard, activePlayer) || !getEmptyCells(gameBoard).length) {
         disablePlayerInteraction = true;
         console.log("here do the game result thing");
@@ -346,9 +385,9 @@ function handleAiMove(startTheGame) {
     if(startTheGame) {
         handlePlayerMove($(".game__cell")[boardCM[generateRandomNumber(0, boardCM.length)]]);
     } else {
-        if(aiLevel == 1) (generateRandomNumber(0, 100) < 30) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
-        if(aiLevel == 2) (generateRandomNumber(0, 100) < 70) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
-        if(aiLevel == 3) handlePlayerMove(masterMove, activePlayer);
+        if(aiLevel === 1) (generateRandomNumber(0, 10) < 3) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
+        if(aiLevel === 2) (generateRandomNumber(0, 10) < 7) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
+        if(aiLevel === 3) handlePlayerMove(masterMove, activePlayer);
     }
     
     if (checkResults()) return;

@@ -390,17 +390,53 @@
         border-radius: $size-increment-x5;
         padding: .3em .5em;
     }
+}
 
-    &__result {
+.game-result {
+    display: none;
+
+    @extend .flex-container;
+
+    flex-flow: column nowrap;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: $primary-color-quartary;
+    background-color: $primary-color-tertiary;
+    text-align: center;
+    z-index: 1;
+
+    &__icon {
+        font-size: 10rem;
+    }
+    
+    &__draw, &__win {
         display: none;
-        flex-flow: column nowrap;
-        justify-content: center;
+    }
 
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        color: #F9F9F9;
-        text-align: center;
-        z-index: 1;
+    &__status {
+        margin-top: $size-increment-x2;
+        font-size: $size-increment-x3;
+        font-weight: $font-style-regular;
+    }
+
+    &--draw {
+        background-color: $alternate-color-tertiary;
+    }
+
+    &--circle {
+        background-color: $alternate-color-main;
+
+        .game-result__icon {
+            color: #ffe451;
+        }
+    }
+
+    &--times {
+        background-color: $alternate-color-secondary;
+
+        .game-result__icon {
+            color: #ffe451;
+        }
     }
 }
