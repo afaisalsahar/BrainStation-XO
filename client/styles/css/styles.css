@@ -58,7 +58,7 @@ span {
   display: block;
 }
 
-.flex-container, .container, .mode, .mode__main, .side, .side__main, .level, .level__main, .join, .join__form, .game, .game__stats, .game__switch, .game__controls, .game__button, .game-result {
+.flex-container, .container, .mode, .mode__main, .side, .side__main, .level, .level__main, .join, .join__form, .game, .game__stats, .game__switch, .game__controls, .game__button, .game__mode, .game-result {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -251,7 +251,8 @@ span {
   padding: 1rem 0;
   list-style-type: none;
   text-align: center;
-  font-weight: 800;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 .game__stats li {
   font-size: 0.9rem;
@@ -350,7 +351,7 @@ span {
   box-shadow: 0 0 0 0.25rem #EFEFEF, 0 0 0 0.25rem #3989d4;
 }
 .game__mode {
-  font-weight: 600;
+  font-weight: 800;
   text-transform: uppercase;
   border: 1px solid #909090;
   border-radius: 4rem;

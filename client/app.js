@@ -4,7 +4,7 @@ let gameMode = "";
 let player = "";
 let ai = "";
 let activePlayer = player;
-let firstPlayer = ai;
+let firstPlayer = player;
 let disablePlayerInteraction = false;
 
 let aiLevel = 0;            
@@ -92,6 +92,9 @@ function hanlePlayerHover(cell, mode) {
 
 // handle player moves
 function handlePlayerMove(cell, value) {
+
+    console.log(value);
+
     const cellCheck = cell.dataset;
     if (cellCheck.checked === "true") return;
 
@@ -107,13 +110,13 @@ function handlePlayerMove(cell, value) {
         .removeClass()
         .addClass(value === "X" || value === "times" ? "fa-solid fa-xmark" : "fa fa-circle-o");
 
-    if (gameMode === 'single') gameBoard[cellCheck.index] = activePlayer;
+    if (gameMode === "single") gameBoard[cellCheck.index] = activePlayer;
 
     return true;
 }
 
 // display game results
-function displayGmeResults(status, side) {
+function displayGameResult(status, side) {
     if(status === 2) {
         $(".game-result")
             .addClass("game-result--draw");
@@ -193,7 +196,7 @@ function handleGameResult(pattern) {
             }
 
             setTimeout(function() {
-                displayGmeResults(result, activePlayer)
+                displayGameResult(result, activePlayer)
             }, 800);
         }
     
@@ -207,7 +210,7 @@ function handleGameResult(pattern) {
             }
 
             setTimeout(function() {
-                displayGmeResults(result, activePlayer)
+                displayGameResult(result, activePlayer)
             }, 800);
         }
     }
@@ -247,7 +250,7 @@ $(".game__cell").on("click", function(e) {
     if (gameMode === "single") {
         if ((disablePlayerInteraction) || !handlePlayerMove(this, activePlayer)) return;
 
-        if(checkResults()) return;
+        if(checkResults()) return setTimeout(handleFirstMove, 2005);
 
         handleSwitchPlayer();
 
@@ -371,7 +374,6 @@ function checkResults() {
 
     if (winCombinations(gameBoard, activePlayer) || !getEmptyCells(gameBoard).length) {
         disablePlayerInteraction = true;
-        console.log("here do the game result thing");
 
         handleGameResult();
         updateGameStndings();
@@ -442,21 +444,38 @@ function handleAiMove(startTheGame) {
     noviceMove = $(".game__cell")[getEmptyCells(gameBoard)[generateRandomNumber(0, getEmptyCells(gameBoard).length)]];
 
     if(startTheGame) {
-        handlePlayerMove($(".game__cell")[boardCM[generateRandomNumber(0, boardCM.length)]]);
+        handlePlayerMove($(".game__cell")[boardCM[generateRandomNumber(0, boardCM.length)]], activePlayer);
     } else {
         if(aiLevel === 1) (generateRandomNumber(0, 10) < 3) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
         if(aiLevel === 2) (generateRandomNumber(0, 10) < 7) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
         if(aiLevel === 3) handlePlayerMove(masterMove, activePlayer);
     }
     
-    if (checkResults()) return;
+    if (checkResults()) return setTimeout(handleFirstMove, 2005);
 
     handleSwitchPlayer();
     disablePlayerInteraction = false;
 }
 
+
+function handleFirstMove() {
+    if(firstPlayer === player) {
+        firstPlayer = activePlayer = ai;
+            disablePlayerInteraction = true;
+            setTimeout(function() {
+                handleAiMove(true);
+            }, generateRandomNumber(0, 1000) + 500);
+    } else {
+        firstPlayer = activePlayer = player;
+        disablePlayerInteraction = false;
+    }
+
+    indicatorPlayer();
+}
+
 function handleSwitchPlayer() {
     activePlayer = (activePlayer === player) ? ai : player;
+
     indicatorPlayer();
 }
 

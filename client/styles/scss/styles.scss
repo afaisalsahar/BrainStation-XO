@@ -255,7 +255,8 @@
         padding: $size-increment-x2 0;
         list-style-type: none;
         text-align: center;
-        font-weight: $font-style-bold;
+        font-weight: $font-style-medium;
+        text-transform: uppercase;
 
         li {
             font-size: .9rem;
@@ -384,11 +385,14 @@
     }
 
     &__mode {
-        font-weight: $font-style-medium;
+        @extend .flex-container;
+
+        font-weight: $font-style-bold;
         text-transform: uppercase;
         border: 1px solid $primary-color-tertiary;
         border-radius: $size-increment-x5;
         padding: .3em .5em;
+
     }
 }
 
