@@ -12,7 +12,11 @@ let gameBoard = [0,1,2,3,4,5,6,7,8];
 let boardCM = [0,2,4,6,8];
 let boardRL = [];
 
-let gameStats = {c: 0, t: 0, d: 0};
+let gameStandings = {
+    circle: 0,
+    times: 0,
+    draw: 0
+};
             
 let masterMove = "";
 let noviceMove = "";
@@ -81,6 +85,7 @@ function handlePlayerMove(cell, value) {
     return true;
 }
 
+// display game results
 function displayGmeResults(status, side) {
     if(status === 2) {
         $(".game-result")
@@ -109,6 +114,30 @@ function displayGmeResults(status, side) {
     }
 }
 
+function updateGameStndings() {
+    const currentStandings = $(".game__stats").children();
+
+    for(let i = 0; i < currentStandings.length; i++) {
+        if($(currentStandings[i]).hasClass("game__circle")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.circle > 1) ? gameStandings.circle+" wins" : gameStandings.circle+" win");
+        }
+
+        if($(currentStandings[i]).hasClass("game__times")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.times > 1) ? gameStandings.times+" wins" : gameStandings.times+" win");
+        }
+
+        if($(currentStandings[i]).hasClass("game__draw")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.draw > 1) ? gameStandings.draw+" draws" : gameStandings.draw+" draw");
+        }
+    }
+}
+
 // hanlde game results
 function handleGameResult(pattern) {
 
@@ -129,7 +158,7 @@ function handleGameResult(pattern) {
         
         if (result === 1) {
             boardRL.push(activePlayer);
-            (activePlayer === "circle") ? gameStats.c++ : gameStats.t++;
+            (activePlayer === "circle") ? gameStandings.circle++ : gameStandings.times++;
             for (let i = 0; i < winCombo.length; i++) {
                 $(allCells[winCombo[i]])
                     .removeClass()
@@ -143,7 +172,7 @@ function handleGameResult(pattern) {
     
         if (result === 2) {
             boardRL.push("draw");
-            gameStats.d++;
+            gameStandings.draw++;
             for (let i = 0; i < gameBoard.length; i++) {
                 $(allCells[i])
                     .removeClass()
@@ -318,6 +347,7 @@ function checkResults() {
         console.log("here do the game result thing");
 
         handleGameResult();
+        updateGameStndings();
 
         return true;
     }
