@@ -1,11 +1,13 @@
 let gameMode = "";
-let playerOne = "";
-let playerTwo = "";
-let activePlayer = playerOne;
-let firstPlayer = playerTwo;
+
+// singleplayer setup
+let player = "";
+let ai = "";
+let activePlayer = player;
+let firstPlayer = ai;
 let disablePlayerInteraction = false;
 
-let gameLevel = 0;            
+let aiLevel = 0;            
 let gameBoard = [0,1,2,3,4,5,6,7,8];
 let boardCM = [0,2,4,6,8];
 let boardRL = [];
@@ -14,7 +16,6 @@ let gameStats = {c: 0, t: 0, d: 0};
             
 let masterMove = "";
 let noviceMove = "";
-
 
 // multiplayer setup
 const socket = io();
@@ -27,7 +28,7 @@ function indicatorPlayer() {
     $(".game__indicator .game__icon")
         .removeClass("game__icon--active-times game__icon--active-circle");
 
-    if (activePlayerNumber === 2) {
+    if (activePlayer === "circle" || activePlayerNumber === 2) {
         $(".game__indicator .game__icon--circle")
             .addClass("game__icon--active-circle");
     } else {
@@ -37,7 +38,9 @@ function indicatorPlayer() {
 }
 
 function cellIcon() {
-    return (activePlayerNumber === 2) ? "fa fa-circle-o" : "fa-solid fa-xmark";
+    return (activePlayer === "circle" || activePlayerNumber === 2) ?
+        "fa fa-circle-o" :
+        "fa-solid fa-xmark";
 }
 
 // handle player hover event
@@ -58,31 +61,115 @@ function hanlePlayerHover(cell, mode) {
 
 // handle player moves
 function handlePlayerMove(cell, value) {
-    if (disablePlayerInteraction) return;
-
     const cellCheck = cell.dataset;
     if (cellCheck.checked === "true") return;
 
     cellCheck.checked = "true";
-
-    $(cell).removeClass("game__cell--hover animate__animated animate__fadeIn");
-    $(cell).addClass(activePlayerNumber === 2 ? "game__cell--circle animate__animated animate__bounceIn" : "game__cell--times animate__animated animate__bounceIn");
+    
+    $(cell)
+        .removeClass("game__cell--hover animate__animated animate__fadeIn");
+    $(cell)
+        .addClass(activePlayerNumber === 2 || activePlayer === "circle" ?
+            "game__cell--circle animate__animated animate__bounceIn" :
+            "game__cell--times animate__animated animate__bounceIn");
     $(cell.children[0])
         .removeClass()
-        .addClass(value === "X" ? "fa-solid fa-xmark" : "fa fa-circle-o");
+        .addClass(value === "X" || value === "times" ? "fa-solid fa-xmark" : "fa fa-circle-o");
+
+    if (gameMode === 'single') gameBoard[cellCheck.index] = activePlayer;
+
+    return true;
 }
 
 // hanlde game results
-function handleGameResult(pattern) { 
-    for (let cell of pattern) {
-        const winPattern = cell[0] * 3 + cell[1];
-        $($(`#${winPattern}`)[0])
-            .removeClass()
-            .addClass('game__cell game__cell--won animate__animated animate__bounceOut')
+function handleGameResult(pattern) {
+
+    if (gameMode === "multi") {
+        for (let cell of pattern) {
+            const winPattern = cell[0] * 3 + cell[1];
+            $($(`#${winPattern}`)[0])
+                .removeClass()
+                .addClass('game__cell game__cell--won animate__animated animate__bounceOut')
+        }    
+    }
+
+    if (gameMode === "single") {
+        const allCells = $(".game__cell");
+        const winCombo = winCombinations(gameBoard, activePlayer);
+        const result = pattern || (winCombo ? 1 : (!winCombo && !getEmptyCells(gameBoard).length) ? 2 : 0);
+        
+        if (result === 1) {
+            boardRL.push(activePlayer);
+            (activePlayer === "circle") ? gameStats.c++ : gameStats.t++;
+            for (let i = 0; i < winCombo.length; i++) {
+                $(allCells[winCombo[i]])
+                    .removeClass()
+                    .addClass("game__cell game__cell--won animate__animated animate__bounceOut");
+            }
+        }
+    
+        if (result == 2) {            
+            boardRL.push("draw");
+            gameStats.d++;
+            for (let i = 0; i < gameBoard.length; i++) {
+                $(allCells[i])
+                    .removeClass()
+                    .addClass("game__cell game__cell--draw animate__animated animate__fadeOut");}
+        }
     }
 }
 
-// hanlde game updates 
+// show player marker
+$(".game__cell").on("mouseenter", function(_e) {
+    hanlePlayerHover(this, 1);
+}).on("mouseleave", function(_e) {
+    hanlePlayerHover(this, 0);
+});
+
+// game play
+$(".game__cell").on("click", function(e) {
+
+    if (gameMode === "multi") {
+        
+        if (!activeGame || activeGame.gameOver) return;
+        const playRoom = activeRoom;
+        const cellId = Number(this.id);
+    
+        socket.emit(
+            "playMove",
+            playRoom,
+            [Math.floor(cellId / 3), cellId % 3],
+            (success) => {
+                if (!success) {
+                    console.log("Not able to play move");
+                } else {
+                    console.log("Move played Successfully");
+                    indicatorPlayer();
+                }
+            }
+        )
+    }
+
+    if (gameMode === "single") {
+        if ((disablePlayerInteraction) || !handlePlayerMove(this, activePlayer)) return;
+
+        // if(checkResults()) return setTimeout(firstMove, 2005);
+        // switchP(true);
+        handleSwitchPlayer();
+
+        if(activePlayer === ai) {
+            disablePlayerInteraction = true;
+            setTimeout(
+                handleAiMove(),
+                generateRandomNumber(0, 1000) + 500
+            );
+        }
+    }
+});
+
+/* MULTI PLAYER */
+
+// hanlde game updates  
 function updateGame(gameState) {
     console.log("update Game: ", gameState);
 
@@ -117,27 +204,6 @@ function updateGame(gameState) {
 
     indicatorPlayer();
 }
-
-// game play
-$(".game__cell").on("click", function(e) {
-    if (!activeGame || activeGame.gameOver) return;
-    const playRoom = activeRoom;
-    const cellId = Number(this.id);
-
-    socket.emit(
-        "playMove",
-        playRoom,
-        [Math.floor(cellId / 3), cellId % 3],
-        (success) => {
-            if (!success) {
-                console.log("Not able to play move");
-            } else {
-                console.log("Move played Successfully");
-                indicatorPlayer();
-            }
-        }
-    )
-});
 
 // multiplayer setup
 socket.on("update", (gameState) => {
@@ -182,68 +248,125 @@ $("#join-game").on("submit", function(e) {
     indicatorPlayer();
 });
 
-// show player marker
-$(".game__cell").on("mouseenter", function(_e) {
-    hanlePlayerHover(this, 1);
-}).on("mouseleave", function(_e) {
-    hanlePlayerHover(this, 0);
-});
+/* SINGLE PLAYER */
 
-// choose game mode
-$(".mode__type").on("click", function(_e) {
-    if (!this.dataset.mode) return;
+function generateRandomNumber(start, end) {
+    return Math.floor(Math.random(start) * end);
+}
 
-    gameMode = this.dataset.mode;
-    $(".mode")
-        .fadeOut(300, function() {
-            if(gameMode === 'single') {
-                $(".side")
-                    .fadeIn()
-                    .css("display", "flex");
-            } else {
-                $(".join")
-                    .fadeIn()
-                    .css("display", "flex");
-            }
+function getEmptyCells(board){
+    return board.filter(function (cell){
+        return cell != "circle" && cell != "times"
     });
-});
+}
 
-// choose marker / circle or times
-$(".side__icon").on("click", function(_e) {
+function winCombinations(board, player) {
+    if (board[0] == player && board[1] == player && board[2] == player) return [0,1,2];
+    if (board[3] == player && board[4] == player && board[5] == player) return [3,4,5];
+    if (board[6] == player && board[7] == player && board[8] == player) return [6,7,8];
+    if (board[0] == player && board[3] == player && board[6] == player) return [0,3,6];
+    if (board[1] == player && board[4] == player && board[7] == player) return [1,4,7];
+    if (board[2] == player && board[5] == player && board[8] == player) return [2,5,8];
+    if (board[0] == player && board[4] == player && board[8] == player) return [0,4,8];
+    if (board[2] == player && board[4] == player && board[6] == player) return [2,4,6];
 
-    if (this.dataset.side) {
-        playerOne = this.dataset.side;
-        activePlayer = playerOne;
-        firstPlayer = playerOne;
+    return false;
+}
+
+function checkResults() {
+    if (winCombinations(gameBoard, activePlayer) || !getEmptyCells(gameBoard).length) {
+        disablePlayerInteraction = true;
+        console.log("here do the game result thing");
+
+        handleGameResult();
+
+        return true;
     }
 
-    playerTwo = (playerOne === 'circle') ? 'times' : 'circle';
+    return false;
+}
 
-    if (gameMode === "single") {
-            $(".level")
-                .addClass(playerOne === "circle" ? "level--circle" : "level--times");
-    
-            $(playerOne === "circle" ? ".level__icon--circle" : ".level__icon--times")
-                .css("display", "block");
+function generateAiMove(newBoard, gamePlayer){
+    const emptyCells = getEmptyCells(newBoard);
+
+    if (winCombinations(newBoard, ai)) return {score:10};
+    if (winCombinations(newBoard, player)) return {score:-10};
+    if (emptyCells.length === 0) return {score:0};
+
+    let moves = [];
+
+    for (let i = 0; i < emptyCells.length; i++) {
+        let move = {};
+        move.index = newBoard[emptyCells[i]];
+
+        newBoard[emptyCells[i]] = gamePlayer;
+
+        if (gamePlayer == ai){
+            let result = generateAiMove(newBoard, player);
+            move.score = result.score;
         }
-    
-        $(".side")
-            .fadeOut(300, function() {
-                if (gameMode === "single") {
-                    $(".level")
-                        .fadeIn()
-                        .css("display", "flex");
-                } else {
-                    $(".game").fadeIn().css("display", "flex");
-                }
-        });
-});
+        else{
+            let result = generateAiMove(newBoard, ai);
+            move.score = result.score;
+        }
 
-// single player / pick difficulty level
+        newBoard[emptyCells[i]] = move.index;
+        moves.push(move);
+    }
+
+    let bestMove;
+
+    if (gamePlayer === ai) {
+        let bestScore = -Infinity;
+        for(let i = 0; i < moves.length; i++){
+            if (moves[i].score > bestScore){
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    } else {
+        let bestScore = Infinity;
+        for(let i = 0; i < moves.length; i++){
+            if (moves[i].score < bestScore){
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove];
+}
+
+function handleAiMove(startTheGame) {
+    activePlayer = ai;
+
+    masterMove = $(".game__cell")[generateAiMove(gameBoard, activePlayer).index];
+    noviceMove = $(".game__cell")[getEmptyCells(gameBoard)[generateRandomNumber(0, getEmptyCells(gameBoard).length)]];
+
+    if(startTheGame) {
+        handlePlayerMove($(".game__cell")[boardCM[generateRandomNumber(0, boardCM.length)]]);
+    } else {
+        if(aiLevel == 1) (generateRandomNumber(0, 100) < 30) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
+        if(aiLevel == 2) (generateRandomNumber(0, 100) < 70) ? handlePlayerMove(masterMove, activePlayer) : handlePlayerMove(noviceMove, activePlayer);
+        if(aiLevel == 3) handlePlayerMove(masterMove, activePlayer);
+    }
+    
+    if (checkResults()) return;
+
+    handleSwitchPlayer();
+    disablePlayerInteraction = false;
+}
+
+function handleSwitchPlayer() {
+    activePlayer = (activePlayer === player) ? ai : player;
+    indicatorPlayer();
+}
+
+// #3   single player / difficulty level
 $(".level__size").on("click", function(e) {
     if (!this.dataset.level) return false;
 
-    gameLevel = parseInt(this.dataset.level);
+    aiLevel = parseInt(this.dataset.level);
 
     $(".level")
         .fadeOut(300, function() {
@@ -260,4 +383,55 @@ $(".level__size").on("click", function(e) {
     });
 
     indicatorPlayer();
+});
+
+// #2   single player / marker / circle or times
+$(".side__icon").on("click", function(_e) {
+    if (!this.dataset.side) return;
+
+    if (gameMode === "single") {
+
+        player = this.dataset.side;
+        activePlayer = player;
+        firstPlayer = player;
+    
+        ai = (player === 'circle') ? 'times' : 'circle';
+    
+            $(".level")
+                .addClass(player === "circle" ? "level--circle" : "level--times");
+    
+            $(player === "circle" ? ".level__icon--circle" : ".level__icon--times")
+                .css("display", "block");
+    }
+    
+        $(".side")
+            .fadeOut(300, function() {
+                if (gameMode === "single") {
+                    $(".level")
+                        .fadeIn()
+                        .css("display", "flex");
+                } else {
+                    $(".game").fadeIn().css("display", "flex");
+                }
+        });
+});
+
+// #1   choose game mode
+$(".mode__type").on("click", function(_e) {
+    if (!this.dataset.mode) return;
+
+    gameMode = this.dataset.mode;
+
+    $(".mode")
+        .fadeOut(300, function() {
+            if(gameMode === 'single') {
+                $(".side")
+                    .fadeIn()
+                    .css("display", "flex");
+            } else {
+                $(".join")
+                    .fadeIn()
+                    .css("display", "flex");
+            }
+    });
 });

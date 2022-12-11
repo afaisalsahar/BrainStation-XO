@@ -150,8 +150,7 @@ span {
 .level {
   display: none;
   flex-flow: column nowrap;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 16rem;
+  min-height: 25rem;
   height: 100%;
 }
 .level__title {
@@ -284,10 +283,10 @@ span {
 .game__cell--hover {
   color: #E8E8E8;
 }
-.game__cell--times {
+.game__cell--circle {
   color: #4dbcd4;
 }
-.game__cell--circle {
+.game__cell--times {
   color: #3989d4;
 }
 .game__cell--won {
