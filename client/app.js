@@ -47,6 +47,33 @@ function cellIcon() {
         "fa-solid fa-xmark";
 }
 
+// handle resetting game board
+function handleGameReset() {
+    gameBoard = [0,1,2,3,4,5,6,7,8];
+    disablePlayerInteraction = false;
+
+    Array.prototype.slice.call(
+        $(".game__cell")).forEach(function(cell) {
+            cell.dataset.checked = false;
+            cell.className = "game__cell";
+            cell.children[0].className = "fa";
+    });
+
+    if (boardRL[boardRL.length-1] === "draw") {
+        $(".game-result .game-result__draw")
+            .fadeOut(300, function() {
+                $(".game-result")
+                    .fadeOut(300).removeClass().addClass("game-result");
+        });
+    } else {
+        $(".game-result .game-result__win")
+            .fadeOut(300, function() {
+                $(".game-result")
+                    .fadeOut(300).removeClass().addClass("game-result");
+        });
+    }
+}
+
 // handle player hover event
 function hanlePlayerHover(cell, mode) {
     if (disablePlayerInteraction) return;
@@ -348,6 +375,8 @@ function checkResults() {
 
         handleGameResult();
         updateGameStndings();
+
+        setTimeout(handleGameReset, 2000);
 
         return true;
     }
