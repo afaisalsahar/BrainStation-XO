@@ -383,6 +383,9 @@ span {
 .game-result--draw {
   background-color: #5C7184;
 }
+.game-result--draw .game-result__icon {
+  color: #ff7e7e;
+}
 .game-result--circle {
   background-color: #4dbcd4;
 }

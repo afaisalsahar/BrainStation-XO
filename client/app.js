@@ -41,6 +41,7 @@ function indicatorPlayer() {
     }
 }
 
+// active player marker
 function cellIcon() {
     return (activePlayer === "circle" || activePlayerNumber === 2) ?
         "fa fa-circle-o" :
@@ -92,9 +93,6 @@ function hanlePlayerHover(cell, mode) {
 
 // handle player moves
 function handlePlayerMove(cell, value) {
-
-    console.log(value);
-
     const cellCheck = cell.dataset;
     if (cellCheck.checked === "true") return;
 
@@ -257,8 +255,8 @@ $(".game__cell").on("click", function(e) {
         if(activePlayer === ai) {
             disablePlayerInteraction = true;
             setTimeout(
-                handleAiMove(),
-                generateRandomNumber(0, 1000) + 500
+                handleAiMove,
+                generateRandomNumber(0, 1000) + generateRandomNumber(0, 1000)
             );
         }
     }
@@ -552,3 +550,35 @@ $(".mode__type").on("click", function(_e) {
             }
     });
 });
+
+$("#game-refresh").on("click", function(e) {
+    if (getEmptyCells(gameBoard).length === 9) return;
+
+    disablePlayerInteraction = true;
+    handleGameResult(2); updateGameStndings();
+    setTimeout(handleGameReset, 2000);
+    setTimeout(handleFirstMove, 2005);
+});
+
+$("#game-reset").on("click", function(e) {    
+    gameMode = "";
+    player = "";
+    ai = "";
+    activePlayer = player;
+    firstPlayer = player;
+
+    aiLevel = 0;
+    gameStandings = {
+        circle: 0,
+        times: 0,
+        draw: 0
+    };
+
+    handleGameReset();
+    updateGameStndings();
+    
+    $(".game").fadeOut(300, function() {
+        $(".mode").fadeIn();
+    });
+});
+

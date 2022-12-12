@@ -426,6 +426,10 @@
 
     &--draw {
         background-color: $alternate-color-tertiary;
+        
+        .game-result__icon {
+            color: #ff7e7e;
+        }
     }
 
     &--circle {
