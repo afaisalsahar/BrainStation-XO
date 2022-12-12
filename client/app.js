@@ -307,7 +307,29 @@ socket.on("update", (gameState) => {
 
 socket.on("terminated", () => {updateGame(null)});
 
+socket.on('lobbyRoomWaiting', function(waitInLobby) {
+    if(waitInLobby) {
+        $(".join")
+        .fadeOut(300, function() {
+            $(".wait")
+                .fadeIn()
+                .css("display", "flex");
+        });
+
+        return;
+    }
+    
+    $(".join").fadeOut(300);
+    $(".wait").fadeOut(300);
+    $(".lobby").fadeOut(300);
+
+    setTimeout(function() {
+        $(".game").fadeIn().css("display", "flex")
+    }, 300);
+});
+
 // multiplayer join request
+
 $("#join-game").on("submit", function(e) {
     e.preventDefault();
 
@@ -316,30 +338,9 @@ $("#join-game").on("submit", function(e) {
     
     const playerName = $("#join-name").val().trim();
     const playRoom = $("#join-room").val().trim();
-    if (!playerName && !playRoom) return;
+    handleJoinGame(playerName, playRoom);
 
-    socket.emit("joinGame", playRoom, playerName, (joinSuccess, playerNumber) => {
-        if(!joinSuccess) {
-            console.log('!!Error: Not able to create/join game');
-            return;
-        }
-        
-        activeRoom = playRoom;
-        activePlayerNumber = playerNumber;
-    });
-
-    // reset join form
     this.reset();
-    
-    // hide join screen
-    $(".join")
-    .fadeOut(300, function() {
-        // show game board
-        $(".game")
-            .fadeIn()
-            .css("display", "flex");
-    });
-    
     indicatorPlayer();
 });
 
@@ -544,14 +545,77 @@ $(".mode__type").on("click", function(_e) {
                     .fadeIn()
                     .css("display", "flex");
             } else {
-                $(".join")
+
+                socket.emit("lobbyRoom", (lobbyRoomSuccess) => {
+                    if(!lobbyRoomSuccess) {
+                        $(".lobby__no-rooms").css("display", "block");
+                        return;
+                    }
+
+                    lobbyRoomSuccess.forEach(function(room) {
+                        $(".lobby__rooms").append(
+                            `<a class="lobby__room" data-room="${room}" href="#">
+                                <li class="lobby__room-name">${room}</li>
+                            </a>`
+                        );
+                    });
+
+                    handleLobbyRoomJoin();
+                });
+            
+                $(".lobby")
                     .fadeIn()
                     .css("display", "flex");
             }
     });
 });
 
-$("#game-refresh").on("click", function(e) {
+function handleJoinGame(playerName, playRoom) {
+    if (!playerName && !playRoom) return;
+
+    socket.emit("joinGame", playRoom, playerName, (joinSuccess, playerNumber) => {
+        if(!joinSuccess) {
+            console.log('!!Error: Not able to create/join game');
+            return;
+        }
+
+        activeRoom = playRoom;
+        activePlayerNumber = playerNumber;
+    });
+}
+
+function handleLobbyRoomJoin() {
+    $(".lobby__room").on("click", function(e) {
+        e.preventDefault();
+        
+        const playerName = "Random Player 2";
+        const playRoom = this.dataset.room;
+
+        handleJoinGame(playerName, playRoom);
+
+        $(".lobby")
+        .fadeOut(300, function() {
+            $(".game")
+                .fadeIn()
+                .css("display", "flex");
+        });
+        
+        indicatorPlayer();
+    });
+};
+
+$("#lobby-action").on("click", function(e) {
+    e.preventDefault();
+
+    $(".lobby")
+        .fadeOut(function() {
+            $(".join")
+            .fadeIn()
+            .css("display", "flex");
+        });
+});
+
+$("#game-refresh").on("click", function(_e) {
     if (getEmptyCells(gameBoard).length === 9) return;
 
     disablePlayerInteraction = true;
@@ -560,7 +624,7 @@ $("#game-refresh").on("click", function(e) {
     setTimeout(handleFirstMove, 2005);
 });
 
-$("#game-reset").on("click", function(e) {    
+$("#game-reset").on("click", function(_e) {    
     gameMode = "";
     player = "";
     ai = "";

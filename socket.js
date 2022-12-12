@@ -25,11 +25,32 @@ const fireSocketServer = (server) => {
 			});
 		});
 
+		socket.on("lobbyRoom", (callback) => {
+			/* Start - lobby */
+			/* End - lobby */ 
+
+			// quick validation
+			if (!Array.from(activeGames.values()).length) {
+				callback(false);
+				return;
+			}
+
+			const availableRooms = [];
+
+			for (const room of activeGames) {
+				availableRooms.push(room[0]);
+			}
+
+			callback(availableRooms);
+		});
+
 		socket.on("joinGame", (playRoom, playerName, callback) => {
 			console.log(`User: ${playerName} joined room: ${playRoom}`);
 
 			let game = activeGames.get(playRoom);
 			let playerNumber = -1;
+
+			let waitInLobby = false;
 
 			if (game) {
 				// If game exists and a slot is open, insert as player 2
@@ -40,11 +61,15 @@ const fireSocketServer = (server) => {
 
 				game.player2 = new Player(socket.id, playerName, 2);
 				playerNumber = 2;
+
+				waitInLobby = false;
 			} else {
 				// Create and store new game, fill as player 1
 				game = new Game(new Player(socket.id, playerName, 1));
 				activeGames.set(playRoom, game);
 				playerNumber = 1;
+
+				waitInLobby = true;
 			}
 
 			// // Terminate and disconnect anyone involved in games the user is currently in
@@ -59,8 +84,14 @@ const fireSocketServer = (server) => {
 				}
 			});
 
+			/* Start - lobby */
+			/* End - lobby */ 
+			
 			socket.join(playRoom);
+			
 			io.to(playRoom).emit('update', game.currentState);
+			io.to(playRoom).emit('lobbyRoomWaiting', waitInLobby);
+
 			callback(true, playerNumber);
 		});
 

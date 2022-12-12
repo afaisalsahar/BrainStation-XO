@@ -228,6 +228,81 @@
     }
 }
 
+.lobby {
+    @extend .flex-container;
+    
+    display: none;
+    flex-flow: column wrap;
+    min-height: 25rem;
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: $size-increment-x2-1;
+        margin-bottom: $size-increment-x2;
+    }
+
+    &__main {
+        width: 100%;
+        height: 50%;
+    }
+
+    &__rooms {
+        list-style-position: inside;
+        padding: $size-increment-x2-1;
+    }
+    &__no-rooms {
+        text-align: center;
+        display: none;
+    }
+
+    &__room {
+        display: block;
+        padding: $size-increment-x1-1 $size-increment-x2;
+        background-color: $primary-color-quartary;
+        border-bottom: 1px solid $primary-color-tertiary;
+
+        transition: background .3s;
+        
+        &:last-child {
+            border: none;
+        }
+
+        &:hover {
+            background-color: #DDD;
+        }
+    }
+
+    &__bottom {
+        @extend .flex-container;
+
+        width: 100%;
+    }
+
+    &__action {
+        @extend .flex-container;
+
+        padding: $size-increment-x1-2;
+        border-radius: $size-increment-x5;
+
+        width: 60%;
+        color: $primary-color-quartary;
+        text-transform: uppercase;
+        font-weight: $font-style-medium;
+        background-color: $primary-color-tertiary;
+        border: none;
+        cursor: pointer;
+
+
+        transition: background .3s;
+
+        &:hover, &:active {
+            background-color: $primary-color-secondary;
+        }
+    }
+}
+
 .game {
     @extend .flex-container;
 
@@ -445,6 +520,69 @@
 
         .game-result__icon {
             color: #ffe451;
+        }
+    }
+}
+
+.wait {
+    @extend .flex-container;
+    
+    display: none;
+    flex-flow: column wrap;
+    min-height: 25rem;
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: $size-increment-x2-1;
+        margin-bottom: $size-increment-x2;
+    }
+
+    &__main {
+        margin-left: 1.25rem;
+    }
+
+    &__tiles {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        width: 300px;
+    }
+
+    &__tile {
+        animation: 1s ease 0s pulse infinite;
+        background: $primary-color-quartary;
+        border-radius: $size-increment-x1;
+        float: left;
+        height: $size-increment-x6;
+        margin: $size-increment-x1;
+        width: $size-increment-x6;
+    }
+
+    @for $i from 1 through 9 {
+        &__tile {
+            &:nth-child(#{$i}) {                
+                animation-delay: $i * calc(1s / 18);
+            }
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+        background: $primary-color-quartary;
+        transform: scale(1);
+        }
+
+        25% {
+        background: darken($primary-color-quartary, 10%);
+        transform: scale(1.015);
+        }
+
+        50% {
+        background: $primary-color-quartary;
+        transform: scale(1);
         }
     }
 }
