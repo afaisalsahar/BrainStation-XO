@@ -15,8 +15,8 @@ const fireSocketServer = (server) => {
 			console.log("Disconnecting socket " + socket.id);
 			activeGames.forEach((currentGame, currentRoom) => {
 				if (
-					currentGame.player1.playerId === socket.id ||
-					currentGame.player2.playerId === socket.id
+					currentGame.player1?.playerId === socket.id ||
+					currentGame.player2?.playerId === socket.id
 				) {
 					io.to(currentRoom).emit("terminated");
 					io.socketsLeave(currentRoom);
@@ -26,10 +26,6 @@ const fireSocketServer = (server) => {
 		});
 
 		socket.on("lobbyRoom", (callback) => {
-			/* Start - lobby */
-			/* End - lobby */ 
-
-			// quick validation
 			if (!Array.from(activeGames.values()).length) {
 				callback(false);
 				return;
@@ -43,6 +39,21 @@ const fireSocketServer = (server) => {
 
 			callback(availableRooms);
 		});
+
+		socket.on("getCurrentPlayer", (playRoom, callback) => {
+
+			if(!activeGames.get(playRoom)) return;
+
+			const playerId = activeGames.get(playRoom).player1.playerId;
+			const socketId = socket.id;
+
+			if (!playerId || !socketId) {
+				callback(false);
+				return;
+			}
+
+			callback(playerId === socketId ? 'times' : 'circle');
+		})
 
 		socket.on("joinGame", (playRoom, playerName, callback) => {
 			console.log(`User: ${playerName} joined room: ${playRoom}`);
@@ -84,9 +95,6 @@ const fireSocketServer = (server) => {
 				}
 			});
 
-			/* Start - lobby */
-			/* End - lobby */ 
-			
 			socket.join(playRoom);
 			
 			io.to(playRoom).emit('update', game.currentState);
@@ -124,10 +132,14 @@ const fireSocketServer = (server) => {
 				callback(false);
 			} else {
 				// Move worked, terminate game if it is now over so room is reusable
-				io.to(playRoom).emit("update", newState);
+				io.to(playRoom).emit("update", newState, location);
+
 				if (newState.gameOver) {
-					io.socketsLeave(playRoom);
-					activeGames.delete(playRoom);
+					// GameOver - Results
+					io.to(playRoom).emit("gameOver", newState);
+
+					// io.socketsLeave(playRoom);
+					// activeGames.delete(playRoom);
 				}
 				callback(true);
 			}

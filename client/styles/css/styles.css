@@ -429,7 +429,7 @@ span {
 .game-result__icon {
   font-size: 10rem;
 }
-.game-result__draw, .game-result__win {
+.game-result__draw, .game-result__win, .game-result__lose {
   display: none;
 }
 .game-result__status {
@@ -454,6 +454,9 @@ span {
 }
 .game-result--times .game-result__icon {
   color: #ffe451;
+}
+.game-result--lose {
+  background-color: #ce5858;
 }
 
 .wait {

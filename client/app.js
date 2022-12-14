@@ -43,9 +43,7 @@ function indicatorPlayer() {
 
 // active player marker
 function cellIcon() {
-    return (activePlayer === "circle" || activePlayerNumber === 2) ?
-        "fa fa-circle-o" :
-        "fa-solid fa-xmark";
+    return (activePlayer === "circle" || activePlayerNumber === 2) ? "fa fa-circle-o" : "fa-solid fa-xmark";
 }
 
 // handle resetting game board
@@ -75,9 +73,44 @@ function handleGameReset() {
     }
 }
 
+// handle reset game settings
+function updateGameStndings() {
+    const currentStandings = $(".game__stats").children();
+
+    for(let i = 0; i < currentStandings.length; i++) {
+        if($(currentStandings[i]).hasClass("game__circle")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.circle > 1) ? gameStandings.circle+" wins" : gameStandings.circle+" win");
+        }
+
+        if($(currentStandings[i]).hasClass("game__times")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.times > 1) ? gameStandings.times+" wins" : gameStandings.times+" win");
+        }
+
+        if($(currentStandings[i]).hasClass("game__draw")) {
+            $(currentStandings[i])
+                .children(".game__counter")
+                    .html((gameStandings.draw > 1) ? gameStandings.draw+" draws" : gameStandings.draw+" draw");
+        }
+    }
+}
+
 // handle player hover event
 function hanlePlayerHover(cell, mode) {
+    // TODO : Lag when player hovers the very frist time
     if (disablePlayerInteraction) return;
+
+    if(gameMode === 'multi') {
+        socket.emit("getCurrentPlayer", activeRoom, function(marker) {
+            if(!marker) {
+                console.log("Error: couldn't get current user marker");
+            }            
+            activePlayerNumber = marker === "times" ? 1 : 2;
+        });
+    }
 
     if (cell.dataset.checked === "false") {
         const classNames = "game__cell--hover animate__animated animate__fadeIn";
@@ -97,13 +130,13 @@ function handlePlayerMove(cell, value) {
     if (cellCheck.checked === "true") return;
 
     cellCheck.checked = "true";
-    
+
     $(cell)
         .removeClass("game__cell--hover animate__animated animate__fadeIn");
     $(cell)
-        .addClass(activePlayerNumber === 2 || activePlayer === "circle" ?
-            "game__cell--circle animate__animated animate__bounceIn" :
-            "game__cell--times animate__animated animate__bounceIn");
+        .addClass(value === "X" || value === "times" ?
+            "game__cell--times animate__animated animate__bounceIn" :
+            "game__cell--circle animate__animated animate__bounceIn");
     $(cell.children[0])
         .removeClass()
         .addClass(value === "X" || value === "times" ? "fa-solid fa-xmark" : "fa fa-circle-o");
@@ -142,44 +175,19 @@ function displayGameResult(status, side) {
     }
 }
 
-function updateGameStndings() {
-    const currentStandings = $(".game__stats").children();
-
-    for(let i = 0; i < currentStandings.length; i++) {
-        if($(currentStandings[i]).hasClass("game__circle")) {
-            $(currentStandings[i])
-                .children(".game__counter")
-                    .html((gameStandings.circle > 1) ? gameStandings.circle+" wins" : gameStandings.circle+" win");
-        }
-
-        if($(currentStandings[i]).hasClass("game__times")) {
-            $(currentStandings[i])
-                .children(".game__counter")
-                    .html((gameStandings.times > 1) ? gameStandings.times+" wins" : gameStandings.times+" win");
-        }
-
-        if($(currentStandings[i]).hasClass("game__draw")) {
-            $(currentStandings[i])
-                .children(".game__counter")
-                    .html((gameStandings.draw > 1) ? gameStandings.draw+" draws" : gameStandings.draw+" draw");
-        }
-    }
-}
-
 // hanlde game results
 function handleGameResult(pattern) {
+    const allCells = $(".game__cell");
 
     if (gameMode === "multi") {
-        for (let cell of pattern) {
-            const winPattern = cell[0] * 3 + cell[1];
-            $($(`#${winPattern}`)[0])
+        for (let i = 0; i < pattern.length; i++) {
+            $(allCells[pattern[i]])
                 .removeClass()
-                .addClass('game__cell game__cell--won animate__animated animate__bounceOut')
-        }    
+                .addClass("game__cell game__cell--won animate__animated animate__bounceOut");
+            };
     }
 
     if (gameMode === "single") {
-        const allCells = $(".game__cell");
         const winCombo = winCombinations(gameBoard, activePlayer);
        
         const result = pattern || (winCombo ? 1 : (!winCombo && !getEmptyCells(gameBoard).length) ? 2 : 0);
@@ -225,15 +233,16 @@ $(".game__cell").on("mouseenter", function(_e) {
 $(".game__cell").on("click", function(e) {
 
     if (gameMode === "multi") {
-        
+
         if (!activeGame || activeGame.gameOver) return;
         const playRoom = activeRoom;
+
         const cellId = Number(this.id);
-    
+
         socket.emit(
             "playMove",
             playRoom,
-            [Math.floor(cellId / 3), cellId % 3],
+            cellId,
             (success) => {
                 if (!success) {
                     console.log("Not able to play move");
@@ -265,8 +274,8 @@ $(".game__cell").on("click", function(e) {
 /* MULTI PLAYER */
 
 // hanlde game updates  
-function updateGame(gameState) {
-    console.log("update Game: ", gameState);
+function updateGame(gameState, location) {
+    // console.log("update Game: ", gameState);
 
     if (!gameState) {
         activeGame = null;
@@ -275,37 +284,89 @@ function updateGame(gameState) {
     }
     else {
         activeGame = gameState;
-        
+
         if (!activeGame.gameState) return;
-        
+
         activePlayerNumber = activeGame.activePlayer;
 
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                const value = activeGame.gameState[i][j];
-
-                if (value === " ") continue;
-
-                const parentID = i * 3 + j;
-
-                handlePlayerMove($(`#${parentID}`)[0], value);
-            }
-
-            if (activeGame.gameOver && activeGame.winCombinations) {
-                handleGameResult(activeGame.winCombinations);
-            }
-        }
+       handlePlayerMove($(`#${location}`)[0], activeGame.gameState[location]);
     }
 
     indicatorPlayer();
 }
 
+function displayMultiGameResult(modifier, result) {
+    $(".game-result").addClass(`game-result--${modifier}`);
+
+    if (!result) {
+        $(".game-result")
+            .fadeIn(300, function() {
+            $(`.game-result__${modifier}`)
+                .fadeIn(300, false);
+        }).css("display", "flex");
+
+        return;
+    }
+
+    $(`.game-result__${result} .game-result__status`.toLowerCase()).html(`You ${result}`);
+
+    $(".game-result")
+        .fadeIn(300, function() {
+            $(`.game-result__${result}`.toLowerCase())
+                .fadeIn(300, false);
+    }).css("display", "flex");
+}
+
 // multiplayer setup
-socket.on("update", (gameState) => {
-    updateGame(gameState);
+socket.on("update", (gameState, location) => {
+    updateGame(gameState, location);
 });
 
 socket.on("terminated", () => {updateGame(null)});
+
+socket.on("gameOver", function(gameState) {
+    const result = gameState.winCombinations.length ? 1 : 2;
+
+    if (result === 1) {
+        
+       handleGameResult(gameState.winCombinations);
+
+        if (gameState.activePlayer === 1) {
+            socket.emit("getCurrentPlayer", activeRoom, function(marker) {
+                if (marker === "times") {
+                    setTimeout(function() {
+                        displayMultiGameResult('times', 'Win');
+                    }, 800);
+                } else {
+                    setTimeout(function() {
+                        displayMultiGameResult('lose', 'Lose');
+                    }, 800);
+                }
+            });
+        };
+
+        if (gameState.activePlayer === 2) {
+            socket.emit("getCurrentPlayer", activeRoom, function(marker) {
+                if (marker === "circle") {
+                    setTimeout(function() {
+                        displayMultiGameResult('circles', 'Win');
+                    }, 800);
+                } else {
+                    setTimeout(function() {
+                        displayMultiGameResult('lose', 'Lose');
+                    }, 800);
+                }
+            });
+        };
+    }
+
+    if (result === 2) {        
+        setTimeout(function() {
+            displayMultiGameResult('draw', false);
+        }, 800);
+    }
+
+});
 
 socket.on('lobbyRoomWaiting', function(waitInLobby) {
     if(waitInLobby) {
@@ -546,6 +607,8 @@ $(".mode__type").on("click", function(_e) {
                     .css("display", "flex");
             } else {
 
+                $(".game__mode-text").html("ulti Player")
+
                 socket.emit("lobbyRoom", (lobbyRoomSuccess) => {
                     if(!lobbyRoomSuccess) {
                         $(".lobby__no-rooms").css("display", "block");
@@ -578,7 +641,6 @@ function handleJoinGame(playerName, playRoom) {
             console.log('!!Error: Not able to create/join game');
             return;
         }
-
         activeRoom = playRoom;
         activePlayerNumber = playerNumber;
     });
@@ -588,7 +650,7 @@ function handleLobbyRoomJoin() {
     $(".lobby__room").on("click", function(e) {
         e.preventDefault();
         
-        const playerName = "Random Player 2";
+        const playerName = "Player 2";
         const playRoom = this.dataset.room;
 
         handleJoinGame(playerName, playRoom);

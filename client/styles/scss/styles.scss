@@ -489,7 +489,7 @@
         font-size: 10rem;
     }
     
-    &__draw, &__win {
+    &__draw, &__win, &__lose {
         display: none;
     }
 
@@ -521,6 +521,10 @@
         .game-result__icon {
             color: #ffe451;
         }
+    }
+
+    &--lose {
+        background-color: #ce5858;
     }
 }
 

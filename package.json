@@ -1,7 +1,7 @@
 {
-  "name": "xo",
+  "name": "XO",
   "version": "1.0.0",
-  "description": "Classic Tic-Tac-Toe Game",
+  "description": "BrainStation-XO",
   "main": "index.js",
   "type": "module",
   "scripts": {
