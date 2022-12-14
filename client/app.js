@@ -368,6 +368,10 @@ socket.on("gameOver", function(gameState) {
 
 });
 
+socket.on("resetGame", function() {
+    console.log("reset multiplayer game");
+})
+
 socket.on('lobbyRoomWaiting', function(waitInLobby) {
     if(waitInLobby) {
         $(".join")
@@ -633,6 +637,7 @@ $(".mode__type").on("click", function(_e) {
     });
 });
 
+
 function handleJoinGame(playerName, playRoom) {
     if (!playerName && !playRoom) return;
 
@@ -708,3 +713,49 @@ $("#game-reset").on("click", function(_e) {
     });
 });
 
+
+$(".splash").fadeIn(300, function() {
+
+    setTimeout(function() {
+        const logo = $(".splash__logo")[0];
+        const symbol = $(".splash__symbol")[0];
+    
+        $(logo.children[0])
+            .removeClass()
+            .addClass("animate__animated animate__bounceOutLeft");
+    
+        $(logo.children[1])
+            .removeClass()
+            .addClass("animate__animated animate__bounceOutRight");
+    
+        $(symbol.children[0])
+            .removeClass()
+            .addClass("splash__icon animate__animated animate__bounceOutDown");
+    
+        $(symbol.children[1])
+            .removeClass()
+            .addClass("splash__icon animate__animated animate__bounceOutUp");
+    }, 1800);
+
+    setTimeout(function() {
+        $(".splash").fadeOut(300, function() {
+
+            $(".logo")
+            .removeClass()
+            .addClass('logo animate__animated animate__fadeInDown')
+            .css("display", "flex");
+
+            setTimeout(function() {
+                $(".mode").fadeIn(300, function() {
+
+                    $(".footer")
+                        .removeClass()
+                        .addClass('footer animate__animated animate__fadeInUp')
+                        .css("display", "block"); 
+
+                }).css("display", "flex");
+            }, 600);
+        });
+    }, 2700);
+
+}).css("display", "flex");

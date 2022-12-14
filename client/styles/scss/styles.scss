@@ -4,22 +4,117 @@
 @use './partials/_mixins' as *;
 
 
+body {
+    background: url($background) repeat 0 0;
+    animation: background-scrolling 2s infinite;
+    animation-timing-function: linear;
+
+    @keyframes background-scrolling {
+        100% { 
+            background-position: $size-increment-x4 $size-increment-x4;
+        }
+    }    
+}
+
 .container {
     @extend .flex-container;
 
     flex-flow: column nowrap;
     min-height: 100%;
-    background: radial-gradient(circle farthest-corner, rgba(255, 255, 255, 1), rgba(255, 255, 255, .2));
+    background: radial-gradient(circle farthest-corner, rgba(255, 255, 255, 1), rgba(255, 255, 255, .4));
 }
 
 .xo {
     flex: 0 0 15rem;
-    width: 19rem;
+    width: 21rem;
+    min-height: 30rem;
     border: 1px solid $primary-color-quartary;
-    background-color: #fefefe;
+    background-color: #FEFEFE;
+}
+
+.logo {
+    display: none;
+
+    padding-bottom: $size-increment-x3;
+
+    @extend .flex-container;
+    &__text {
+        @extend .flex-container;
+
+        font-size: 1.6rem;
+        text-transform: uppercase;
+        font-weight: $font-style-bold;
+        margin-right: .3rem;
+    }
+
+    &__symbol {
+        @extend .flex-container;
+    }
+
+    &__icon {
+        @extend .flex-container;
+        font-size: 1.4rem;
+
+        color: $alternate-color-main;
+
+        &:first-child {
+            color: $alternate-color-secondary;
+            margin-right: .1rem;
+        }
+    }
+}
+
+.splash {
+    display: none;
+
+    @extend .flex-container;
+
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        rgba(57,137,212,1) 0%, rgba(57,137,212,1) 56%,
+        rgba(77,188,212,1) 56%, rgba(77,188,212,1) 100%
+    );
+
+    color: $primary-color-quartary;
+
+    &__logo {
+        font-size: 2.3rem;
+        text-transform: uppercase;
+        font-weight: $font-style-bold;
+        margin-right: .5rem;
+
+        span:last-child {
+            margin-top: .3rem;
+        }
+
+        .animate__animated {
+            animation-duration: 1.5s;
+        }
+    }
+
+    &__symbol {
+        @extend .flex-container;
+
+        .animate__animated {
+            animation-duration: 1.5s;
+        }
+    }
+
+    &__icon {
+        @extend .flex-container;
+        font-size: 4rem;
+
+        &:first-child {
+            margin-right: .15rem;
+        }
+    }
 }
 
 .mode {
+    display: none;
+
     @extend .flex-container;
 
     flex-flow: column nowrap;
@@ -192,7 +287,7 @@
         width: 100%;
         flex-wrap: wrap;
     }
-    
+
     &__name, &__room, &__action {
         width: 80%;
         padding: $size-increment-x1-2;
@@ -249,7 +344,8 @@
     }
 
     &__rooms {
-        list-style-position: inside;
+        // list-style-position: inside;
+        list-style: none;
         padding: $size-increment-x2-1;
     }
     &__no-rooms {
@@ -397,7 +493,7 @@
     }
 
     &__indicator {
-        max-width: 20%;
+        max-width: 18%;
         margin: auto;
         padding: $size-increment-x2 0;    
 
@@ -507,7 +603,7 @@
         }
     }
 
-    &--circle {
+    &--circles {
         background-color: $alternate-color-main;
 
         .game-result__icon {
@@ -533,7 +629,6 @@
     
     display: none;
     flex-flow: column wrap;
-    min-height: 25rem;
     height: 100%;
 
     &__title {
@@ -544,7 +639,11 @@
     }
 
     &__main {
-        margin-left: 1.25rem;
+        margin-left: 2.1rem;
+    }
+
+    &__cells {
+        width: 20rem;
     }
 
     &__tiles {
@@ -560,9 +659,9 @@
         background: $primary-color-quartary;
         border-radius: $size-increment-x1;
         float: left;
-        height: $size-increment-x6;
+        height: 5.5rem;
         margin: $size-increment-x1;
-        width: $size-increment-x6;
+        width: 5.5rem;
     }
 
     @for $i from 1 through 9 {
@@ -590,3 +689,26 @@
         }
     }
 }
+
+.footer {
+    display: none;
+
+    padding-top: $size-increment-x3;
+
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: $font-style-regular;
+
+    &__icon {
+        display: inline;
+    }
+
+    a {
+        color: $primary-color-tertiary;
+    }
+
+    &__icon--heart {
+        color: #ff7e7e;
+    }
+}
+

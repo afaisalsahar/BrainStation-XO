@@ -14,12 +14,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./styles/css/styles.css" />
+
+    <link rel="shortcut icon" href="#" />
+    
     <title>XO</title>
 </head>
 
 <body>
     <div class="container">
+        <div class="logo">
+            <div class="logo__text">
+                <span class="animate__animated">Brain</span>
+                <span class="animate__animated">Station</span>
+            </div>
+            <div class="logo__symbol">
+                <span class="logo__icon animate__animated">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </span>
+                <span class="logo__icon animate__animated">
+                    <i class="fa-solid fa-circle-dot"></i>
+                </span>
+            </div>
+        </div>
+
         <div class="xo">
+            <div class="splash">
+                <div class="splash__logo">
+                    <span class="animate__animated animate__bounceInLeft">Brain</span>
+                    <span class="animate__animated animate__bounceInRight">Station</span>
+                </div>
+                <div class="splash__symbol">
+                    <span class="splash__icon animate__animated animate__bounceInDown">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </span>
+                    <span class="splash__icon animate__animated animate__bounceInUp">
+                        <i class="fa-solid fa-circle-dot"></i>
+                    </span>
+                </div>
+            </div>
             <div class="mode">
                 <div class="mode__top">
                     <h1 class="mode__title">Game Mode</h1>
@@ -76,7 +108,7 @@
 
                 <div class="lobby__main">
                     <span class="lobby__no-rooms">There are no active rooms!</span>
-                    <ol class="lobby__rooms"></ol>
+                    <ul class="lobby__rooms"></ul>
                 </div>
                 <div class="lobby__bottom">
                     <a id="lobby-action" class="lobby__action" href="#">Create Room</a>
@@ -216,10 +248,14 @@
                 </div>
             </div>
 
+            <div class="footer">
+                <span class="footer__icon footer__icon--code"><i class="fa-solid fa-code"></i></span> with
+                <span class="footer__icon footer__icon--heart"><i class="fa-solid fa-heart"></i></span>
+                by <a href="https://github.com/afaisalsahar" target="_blank">Ahmad</a>
+            </div>
+            
+            </div>
         </div>
-    </div>
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
         integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>

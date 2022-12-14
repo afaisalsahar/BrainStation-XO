@@ -138,6 +138,8 @@ const fireSocketServer = (server) => {
 					// GameOver - Results
 					io.to(playRoom).emit("gameOver", newState);
 
+					io.to(playRoom).emit("resetGame");
+
 					// io.socketsLeave(playRoom);
 					// activeGames.delete(playRoom);
 				}
