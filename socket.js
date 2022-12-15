@@ -25,6 +25,10 @@ const fireSocketServer = (server) => {
 			});
 		});
 
+		// socket.on("resetGame", function() {
+		// 	console.log("reset game server ");
+		// });
+
 		socket.on("lobbyRoom", (callback) => {
 			if (!Array.from(activeGames.values()).length) {
 				callback(false);
@@ -138,7 +142,8 @@ const fireSocketServer = (server) => {
 					// GameOver - Results
 					io.to(playRoom).emit("gameOver", newState);
 
-					io.to(playRoom).emit("resetGame");
+					// reset game to start again
+					io.to(playRoom).emit("resetGame", "testval");
 
 					// io.socketsLeave(playRoom);
 					// activeGames.delete(playRoom);

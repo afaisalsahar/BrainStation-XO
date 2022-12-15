@@ -101,6 +101,15 @@ function Game (player1, player2) {
 			winCombinations: this.winCombinations,
         }
     }
+
+    this.resetGame = function() {
+        this.activePlayer = this.activePlayer === 1 ? 2 : 1;
+        this.gameBoard = [0,1,2,3,4,5,6,7,8];
+        this.gameOver = false;
+        this.winCombinations = undefined;
+
+        return this.currentState();
+    }
 }
 
 function Player (playerId, playerName, playerNumber) {

@@ -503,10 +503,10 @@ body {
 .game-result--draw .game-result__icon {
   color: #ff7e7e;
 }
-.game-result--circles {
+.game-result--circles, .game-result--circle {
   background-color: #4dbcd4;
 }
-.game-result--circles .game-result__icon {
+.game-result--circles .game-result__icon, .game-result--circle .game-result__icon {
   color: #ffe451;
 }
 .game-result--times {

@@ -603,7 +603,7 @@ body {
         }
     }
 
-    &--circles {
+    &--circles, &--circle {
         background-color: $alternate-color-main;
 
         .game-result__icon {

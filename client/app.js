@@ -369,8 +369,8 @@ socket.on("gameOver", function(gameState) {
 });
 
 socket.on("resetGame", function() {
-    console.log("reset multiplayer game");
-})
+    console.log("reset game client");
+});
 
 socket.on('lobbyRoomWaiting', function(waitInLobby) {
     if(waitInLobby) {
