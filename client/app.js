@@ -17,7 +17,7 @@ let gameStandings = {
     times: 0,
     draw: 0
 };
-            
+                
 let masterMove = "";
 let noviceMove = "";
 
@@ -71,6 +71,37 @@ function handleGameReset() {
                     .fadeOut(300).removeClass().addClass("game-result");
         });
     }
+}
+
+function handleMultiGameReset(result) {
+    Array.prototype.slice.call(
+        $(".game__cell")).forEach(function(cell) {
+            cell.dataset.checked = false;
+            cell.className = "game__cell";
+            cell.children[0].className = "fa";
+    });
+    
+    if (result === 2) {
+        $(".game-result__draw")
+        .fadeOut(300, function() {
+            $(".game-result")
+                .fadeOut(300).removeClass().addClass("game-result");
+        });
+
+        return;
+    }
+
+    $(".game-result__win")
+        .fadeOut(300, function() {
+            $(".game-result")
+                .fadeOut(300).removeClass().addClass("game-result");
+    });
+
+    $(".game-result__lose")
+        .fadeOut(300, function() {
+            $(".game-result")
+                .fadeOut(300).removeClass().addClass("game-result");
+    });
 }
 
 // handle reset game settings
@@ -180,11 +211,19 @@ function handleGameResult(pattern) {
     const allCells = $(".game__cell");
 
     if (gameMode === "multi") {
-        for (let i = 0; i < pattern.length; i++) {
-            $(allCells[pattern[i]])
-                .removeClass()
-                .addClass("game__cell game__cell--won animate__animated animate__bounceOut");
-            };
+        if (!pattern.length) {
+            for (let i = 0; i < gameBoard.length; i++) {
+                $(allCells[i])
+                    .removeClass()
+                    .addClass("game__cell game__cell--draw animate__animated animate__fadeOut");
+            }
+        } else {
+            for (let i = 0; i < pattern.length; i++) {
+                $(allCells[pattern[i]])
+                    .removeClass()
+                    .addClass("game__cell game__cell--won animate__animated animate__bounceOut");
+            };    
+        }
     }
 
     if (gameMode === "single") {
@@ -234,6 +273,8 @@ $(".game__cell").on("click", function(e) {
 
     if (gameMode === "multi") {
 
+        console.log(activeGame);
+
         if (!activeGame || activeGame.gameOver) return;
         const playRoom = activeRoom;
 
@@ -275,7 +316,6 @@ $(".game__cell").on("click", function(e) {
 
 // hanlde game updates  
 function updateGame(gameState, location) {
-    // console.log("update Game: ", gameState);
 
     if (!gameState) {
         activeGame = null;
@@ -301,7 +341,7 @@ function displayMultiGameResult(modifier, result) {
     if (!result) {
         $(".game-result")
             .fadeIn(300, function() {
-            $(`.game-result__${modifier}`)
+            $(`.game-result__${modifier}`.toLowerCase())
                 .fadeIn(300, false);
         }).css("display", "flex");
 
@@ -315,6 +355,7 @@ function displayMultiGameResult(modifier, result) {
             $(`.game-result__${result}`.toLowerCase())
                 .fadeIn(300, false);
     }).css("display", "flex");
+
 }
 
 // multiplayer setup
@@ -360,7 +401,10 @@ socket.on("gameOver", function(gameState) {
         };
     }
 
-    if (result === 2) {        
+    if (result === 2) {
+
+        handleGameResult(gameState.winCombinations);
+
         setTimeout(function() {
             displayMultiGameResult('draw', false);
         }, 800);
@@ -368,8 +412,22 @@ socket.on("gameOver", function(gameState) {
 
 });
 
-socket.on("resetGame", function() {
-    console.log("reset game client");
+socket.on("resetGame", function(newGame) {
+
+    setTimeout(function() {
+        handleMultiGameReset();
+    }, 3000);
+
+    activeGame = newGame;
+    activePlayerNumber = activeGame.activePlayer;
+
+    indicatorPlayer();
+
+    gameStandings.times = activeGame.gameStandings.player1;
+    gameStandings.circle = activeGame.gameStandings.player2;
+    gameStandings.draw = activeGame.gameStandings.draw;
+
+    updateGameStndings();
 });
 
 socket.on('lobbyRoomWaiting', function(waitInLobby) {

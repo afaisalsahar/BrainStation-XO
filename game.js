@@ -9,6 +9,12 @@ function Game (player1, player2) {
 
     this.gameOver = false;
 
+    this.gameStandings = {
+        player1: 0,
+        player2: 0,
+        draw: 0
+    };
+
     this.playMove = function (playerNumber, location) {
         if (this.gameOver) return;
         if (playerNumber !== this.activePlayer) return;
@@ -16,7 +22,7 @@ function Game (player1, player2) {
         if (typeof this.gameBoard[location] !== 'number') return;
         this.gameBoard[location] = playerNumber === 1 ? "X" : "O";
 
-        this.checkIfGameOver();
+        if (this.checkIfGameOver()) this.updateGameStandings();
 
         if (!this.gameOver) this.activePlayer = this.activePlayer === 1 ? 2 : 1;
 
@@ -91,6 +97,15 @@ function Game (player1, player2) {
         return false;
     }
 
+    this.updateGameStandings = function() {
+        if (!this.winCombinations.length) {
+            this.gameStandings.draw += 1;
+        } else {
+            if (this.activePlayer === 1) this.gameStandings.player1 += 1;
+            if (this.activePlayer === 2) this.gameStandings.player2 += 1;
+        }
+    }
+
     this.currentState = function () {
         return {
 			playerOneName: this.player1?.playerName,
@@ -99,6 +114,7 @@ function Game (player1, player2) {
 			gameState: this.gameBoard,
 			gameOver: this.gameOver,
 			winCombinations: this.winCombinations,
+            gameStandings: this.gameStandings
         }
     }
 
@@ -106,7 +122,7 @@ function Game (player1, player2) {
         this.activePlayer = this.activePlayer === 1 ? 2 : 1;
         this.gameBoard = [0,1,2,3,4,5,6,7,8];
         this.gameOver = false;
-        this.winCombinations = undefined;
+        this.winCombinations = undefined
 
         return this.currentState();
     }
